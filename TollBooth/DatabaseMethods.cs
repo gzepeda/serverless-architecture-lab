@@ -55,7 +55,7 @@ namespace TollBooth
                 return licensePlates;
             } catch (Exception ex)
             {
-                _log.Info(ex.Message + ex.StackTrace);
+                _log.Info(ex.Message + ex.InnerException + ex.StackTrace);
             }
 
             return null; 
