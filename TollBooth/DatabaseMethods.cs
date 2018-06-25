@@ -33,24 +33,29 @@ namespace TollBooth
         {
             _log.Info("Retrieving license plates to export");
             int exportedCount = 0;
-            var collectionLink = UriFactory.CreateDocumentCollectionUri(_databaseId, _collectionId);
-            List<LicensePlateDataDocument> licensePlates;
 
-            using (_client = new DocumentClient(new Uri(_endpointUrl), _authorizationKey))
+            try
             {
-                // MaxItemCount value tells the document query to retrieve 100 documents at a time until all are returned.
-                // TODO 5: Retrieve a List of LicensePlateDataDocument objects from the collectionLink where the exported value is false.
-                licensePlates = _client.CreateDocumentQuery<LicensePlateDataDocument>(collectionLink,
-                    new FeedOptions() { MaxItemCount = 100 })
-                        .Where(l => l.exported == false)
-                        .ToList();
+                var collectionLink = UriFactory.CreateDocumentCollectionUri(_databaseId, _collectionId);
+                List<LicensePlateDataDocument> licensePlates;
 
-                // TODO 6: Remove the line below.
+                using (_client = new DocumentClient(new Uri(_endpointUrl), _authorizationKey))
+                {
+                    // MaxItemCount value tells the document query to retrieve 100 documents at a time until all are returned.
+                    // TODO 5: Retrieve a List of LicensePlateDataDocument objects from the collectionLink where the exported value is false.
+                    licensePlates = _client.CreateDocumentQuery<LicensePlateDataDocument>(collectionLink,
+                        new FeedOptions() { MaxItemCount = 100 }).Where(l => l.exported == false).ToList();
+
+                    // TODO 6: Remove the line below.
+                }
+
+                exportedCount = licensePlates.Count();
+                _log.Info($"{exportedCount} license plates found that are ready for export");
+                return licensePlates;
+            } catch (Exception ex)
+            {
+                _log.Info(ex.Message + ex.StackTrace);
             }
-
-            exportedCount = licensePlates.Count();
-            _log.Info($"{exportedCount} license plates found that are ready for export");
-            return licensePlates;
         }
 
         /// <summary>
