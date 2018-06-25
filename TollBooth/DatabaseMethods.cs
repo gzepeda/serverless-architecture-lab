@@ -33,11 +33,12 @@ namespace TollBooth
         {
             _log.Info("Retrieving license plates to export");
             int exportedCount = 0;
+            List<LicensePlateDataDocument> licensePlates;
 
             try
             {
                 var collectionLink = UriFactory.CreateDocumentCollectionUri(_databaseId, _collectionId);
-                List<LicensePlateDataDocument> licensePlates;
+
 
                 using (_client = new DocumentClient(new Uri(_endpointUrl), _authorizationKey))
                 {
@@ -56,6 +57,8 @@ namespace TollBooth
             {
                 _log.Info(ex.Message + ex.StackTrace);
             }
+
+            return null; 
         }
 
         /// <summary>
